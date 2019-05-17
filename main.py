@@ -11,4 +11,4 @@ if __name__ == "__main__" :
     testDataset = ParsingDataset("test")
     testLoader = DataLoader(dataset = testDataset, shuffle = True, pin_memory = torch.cuda.is_available())
 
-    lstm, lstmLoss = trainLSTM(trainLoader, numEpochs = 5)
+    lstm, lstmLoss = trainLSTM(trainLoader, numEpochs = 5, classNum = 18, featureSize = 64)

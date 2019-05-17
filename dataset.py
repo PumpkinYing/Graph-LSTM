@@ -23,17 +23,16 @@ class ParsingDataset(data.Dataset) :
         super(ParsingDataset, self).__init__()
         self.nameList = os.listdir(path+'/Feature')
         self.size = len(self.nameList)
-        print(self.size)
         self.path = path
 
     def __getitem__(self, index) :
         fileName = self.nameList[index]
-        feature = torch.from_numpy(np.loadtxt(self.path+'/Feature/'+fileName))
-        label = torch.from_numpy(np.loadtxt(self.path+'/Label/'+fileName))
-        neighbour = torch.from_numpy(np.loadtxt(self.path+'/Neighbour/'+fileName))
-        sequence = torch.from_numpy(np.loadtxt(self.path+'/Sequence/'+fileName))
-        number = torch.from_numpy(np.loadtxt(self.path+'/Number/'+fileName))
-        return feature, label, neighbour, sequence, number
+        feature = torch.from_numpy(np.loadtxt(self.path+'/Feature/'+fileName)).squeeze(0)
+        label = torch.from_numpy(np.loadtxt(self.path+'/Label/'+fileName)).squeeze(0)
+        neighbour = torch.from_numpy(np.loadtxt(self.path+'/Neighbour/'+fileName)).squeeze(0)
+        sequence = torch.from_numpy(np.loadtxt(self.path+'/Sequence/'+fileName)).squeeze(0)
+        number = torch.from_numpy(np.loadtxt(self.path+'/Number/'+fileName)).squeeze(0)
+        return [feature, label, neighbour, sequence, number]
 
     def __len__(self) :
         return self.size

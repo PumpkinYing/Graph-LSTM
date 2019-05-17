@@ -1,36 +1,39 @@
 import torch
+import torch.nn as nn
 import numpy as np 
 from model import GraphLSTMNet
 from torch.autograd import Variable
 
-def trainLSTM(trainLoader, numEpochs = 5, classNum) :
-    index, feature, label, neighbour, sequence, number = enumerate(trainLoader)
-    featureSize = feature.size(1)
+def trainLSTM(trainLoader, numEpochs, classNum, featureSize) :
     lstm = GraphLSTMNet(featureSize, featureSize, featureSize, classNum)
 
     useGPU = torch.cuda.is_available()
 
-    optimizer = optim.SGD(model.parameters(), lr = 0.0001, momentum=0.9)
+    optimizer = torch.optim.SGD(lstm.parameters(), lr = 0.0001, momentum=0.9)
 
-    #TODO: decide loss function here
+    criterion = nn.CrossEntropyLoss()
 
     for epoch in range(numEpochs):
-        for index, feature, label, neighbour, sequence, number in enumerate(trainLoader) :
+        for index, data in enumerate(trainLoader) :
+            torch.autograd.set_detect_anomaly(True)
+            feature, label, neighbour, sequence, number = data
+            label = label.long()
             if useGPU :
-                index = Variable(index.cuda())
                 feature = Variable(feature.cuda())
                 label = Variable(label.cuda())
+                sequence = Variable(sequence.cuda())
                 neighbour = Variable(neighbour.cuda())
                 number = Variable(number.cuda())
             else :
-                index = Variable(index)
-                feature = Variable(feature())
-                label = Variable(label())
-                neighbour = Variable(neighbour())
-                number = Variable(number())
+                feature = Variable(feature).squeeze()
+                label = Variable(label).squeeze()
+                sequence = Variable(sequence).squeeze()
+                neighbour = Variable(neighbour).squeeze()
+                number = Variable(number).squeeze()
 
-            outputs = GraphLSTMNet(feature, neighbour, number, sequence)
+            outputs = lstm(feature, neighbour, number, sequence)
             loss = criterion(outputs, label)
+            print(loss)
 
             optimizer.zero_grad()
             loss.backward()
