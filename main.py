@@ -6,7 +6,7 @@ from torch.utils.data import DataLoader
 from train import *
 
 if __name__ == "__main__" :
-    trainDataset = ParsingDataset("train")
+    trainDataset = ParsingDataset("output")
     trainLoader = DataLoader(dataset = trainDataset, shuffle = True, pin_memory = torch.cuda.is_available())
     testDataset = ParsingDataset("test")
     testLoader = DataLoader(dataset = testDataset, shuffle = True, pin_memory = torch.cuda.is_available())

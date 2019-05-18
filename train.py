@@ -18,19 +18,21 @@ def trainLSTM(trainLoader, numEpochs, classNum, featureSize) :
             torch.autograd.set_detect_anomaly(True)
             feature, label, neighbour, sequence, number = data
             label = label.long()
-            if useGPU :
-                feature = Variable(feature.cuda())
-                label = Variable(label.cuda())
-                sequence = Variable(sequence.cuda())
-                neighbour = Variable(neighbour.cuda())
-                number = Variable(number.cuda())
-            else :
-                feature = Variable(feature).squeeze()
-                label = Variable(label).squeeze()
-                sequence = Variable(sequence).squeeze()
-                neighbour = Variable(neighbour).squeeze()
-                number = Variable(number).squeeze()
 
+            feature = feature.squeeze()
+            label = label.squeeze()
+            neighbour = neighbour.squeeze()
+            sequence = sequence.squeeze()
+            number = number.squeeze()
+
+            if useGPU :
+                feature = feature.cuda()
+                label = label.cuda()
+                sequence = sequence.cuda()
+                neighbour = neighbour.cuda()
+                number = number.cuda()
+
+            print(feature.shape)
             outputs = lstm(feature, neighbour, number, sequence)
             loss = criterion(outputs, label)
             print(loss)
